@@ -15,6 +15,8 @@ class Producto(models.Model):
     sku = models.CharField(max_length=50, unique=True)
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True, null=True)
+    # --- NUEVO CAMPO DE IMAGEN ---
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     
     # Precios
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
