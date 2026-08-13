@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CROSS | ERP Inventario</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fondo oscuro robusto para el estilo de la marca */
+        body { background-color: #121212; color: #f3f4f6; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Navbar Minimalista -->
+    <nav class="bg-black border-b border-gray-800 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-white font-bold text-2xl tracking-widest">
+                SISTEMA IMPORTACIONES <span class="text-gray-500 text-sm tracking-normal ml-2">ERP</span>
+            </div>
+            <div class="space-x-4 text-sm text-gray-300">
+                <a href="#" class="hover:text-white transition">Dashboard</a>
+                <a href="#" class="hover:text-white transition">Inventario</a>
+                <a href="#" class="hover:text-white transition">Ventas</a>
+                <a href="/admin" class="hover:text-red-500 transition">Admin Panel</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal Dinámico -->
+    <main class="container mx-auto p-6 mt-4">
+        {% block content %}
+        <!-- Aquí se inyectarán el dashboard y las demás pantallas automáticamente -->
+        {% endblock %}
+    </main>
+
+</body>
+</html>
