@@ -34,6 +34,21 @@
                     <span class="text-gray-500 text-sm font-mono">{{ producto.sku }}</span>
                     <span class="text-green-400 font-bold">S/ {{ producto.precio_venta }}</span>
                 </div>
+                <!-- NUEVO: Desglose de Stock -->
+                <div class="mt-4 border-t border-gray-700 pt-3">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Disponibilidad:</p>
+                    
+                    {% for stock in producto.stock_set.all %}
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-300 text-xs">{{ stock.ubicacion.nombre }}</span>
+                            <span class="font-bold text-xs {% if stock.cantidad > 0 %}text-green-400{% else %}text-red-500{% endif %}">
+                                {{ stock.cantidad }} und.
+                            </span>
+                        </div>
+                    {% empty %}
+                        <div class="text-xs text-red-500 font-bold mt-1">Sin registros de stock</div>
+                    {% endfor %}
+                </div>
             </div>
             
         </div>
