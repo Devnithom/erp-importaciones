@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #Nuestras aplicaciones
     'catalogo',
     'inventario',
+    'ventas',
 ]
 
 MIDDLEWARE = [
