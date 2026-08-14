@@ -10,8 +10,16 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import openpyxl
 from openpyxl.styles import Font, Alignment
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def es_admin(user):
+    return user.is_superuser
+
+def es_almacen(user):
+    return user.is_superuser or user.groups.filter(name='Almacen').exists()
 
 @login_required
+@user_passes_test(es_admin, login_url='/catalogo/') # Redirige al dashboard si no tiene permiso
 def dashboard_view(request):
     # 1. Contar cuántos productos distintos existen
     total_productos = Producto.objects.count()
@@ -34,6 +42,7 @@ def dashboard_view(request):
 
 # --- NUEVA VISTA PARA EL FORMULARIO DE INGRESO ---
 @login_required
+@user_passes_test(es_almacen, login_url='/catalogo/')
 def ingreso_mercaderia_view(request):
     if request.method == 'POST':
         form = IngresoMercaderiaForm(request.POST)
@@ -48,12 +57,14 @@ def ingreso_mercaderia_view(request):
     return render(request, 'ingreso_mercaderia.html', {'form': form})
 
 @login_required
+@user_passes_test(es_almacen, login_url='/catalogo/')
 def historial_movimientos_view(request):
     # Traemos todo el historial, del más nuevo al más viejo
     movimientos = Movimiento.objects.all().order_by('-fecha')
     return render(request, 'historial.html', {'movimientos': movimientos})
 
 @login_required
+@user_passes_test(es_almacen, login_url='/catalogo/')
 def realizar_movimiento_view(request):
     if request.method == 'POST':
         form = TrasladoForm(request.POST)
@@ -78,6 +89,7 @@ def realizar_movimiento_view(request):
     return render(request, 'movimientos.html', {'form': form})
 
 @login_required
+@user_passes_test(es_almacen, login_url='/catalogo/')
 def exportar_kardex_excel(request):
     # 1. Crear el libro de Excel y seleccionar la hoja activa
     wb = openpyxl.Workbook()

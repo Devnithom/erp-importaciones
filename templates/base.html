@@ -1,3 +1,4 @@
+{% load seguridad %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,13 +20,38 @@
             <div class="text-white font-bold text-2xl tracking-widest">
                 SISTEMA IMPORTACIONES <span class="text-gray-500 text-sm tracking-normal ml-2">ERP</span>
             </div>
-           <div class="space-x-4 text-sm text-gray-300">
-                <a href="/" class="hover:text-white transition">Dashboard</a>
+           <div class="space-x-4 text-sm text-gray-300 flex items-center">
+                <!-- Solo Admin ve el Dashboard Financiero -->
+                {% if request.user.is_superuser %}
+                    <a href="/" class="hover:text-white transition">Dashboard</a>
+                {% endif %}
+                
+                <!-- Todos ven el Catálogo -->
                 <a href="/catalogo/" class="hover:text-white transition">Inventario</a>
-                <a href="/ingreso/" class="hover:text-white transition">Ingresos</a>
-                <a href="/venta/" class="hover:text-white transition">Ventas</a>
-                <a href="/movimientos/" class="hover:text-yellow-400 transition font-bold">Movimientos</a>
-                <a href="/admin" class="hover:text-red-500 transition ml-4">Admin Panel</a>
+                
+                <!-- Solo Almacen (y Admin) ven estas opciones -->
+                {% if request.user|tiene_rol:"Almacen" %}
+                    <a href="/ingreso/" class="hover:text-white transition">Ingresos</a>
+                    <a href="/movimientos/" class="hover:text-yellow-400 transition font-bold">Movimientos</a>
+                    <a href="/historial/" class="hover:text-white transition">Historial</a>
+                {% endif %}
+                
+                <!-- Solo Vendedores (y Admin) ven esta opción -->
+                {% if request.user|tiene_rol:"Vendedores" %}
+                    <a href="/venta/" class="hover:text-white transition">Ventas</a>
+                {% endif %}
+
+                <!-- Solo Admin ve el botón azul de la base de datos -->
+                {% if request.user.is_superuser %}
+                    <a href="/admin" class="hover:text-blue-500 transition ml-4 border-l border-gray-700 pl-4">Admin</a>
+                {% endif %}
+                
+                <form action="{% url 'logout' %}" method="post" class="inline ml-4">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wider transition">
+                        Cerrar Sesión
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
