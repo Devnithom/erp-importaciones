@@ -3,7 +3,9 @@ from django.contrib import messages
 from .forms import NuevaVentaForm
 from .models import Venta, DetalleVenta
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def nueva_venta_view(request):
     if request.method == 'POST':
         form = NuevaVentaForm(request.POST)

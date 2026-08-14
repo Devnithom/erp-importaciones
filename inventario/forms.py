@@ -12,3 +12,20 @@ class IngresoMercaderiaForm(forms.ModelForm):
             'cantidad': forms.NumberInput(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1', 'min': '1'}),
             'motivo': forms.TextInput(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1', 'placeholder': 'Ej. Importación, confección de taller...'}),
         }
+
+class TrasladoForm(forms.ModelForm):
+    class Meta:
+        model = Movimiento
+        fields = ['producto', 'ubicacion', 'ubicacion_destino', 'cantidad', 'motivo']
+        
+        widgets = {
+            'producto': forms.Select(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1'}),
+            'ubicacion': forms.Select(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1'}),
+            'ubicacion_destino': forms.Select(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1', 'min': '1'}),
+            'motivo': forms.TextInput(attrs={'class': 'w-full bg-gray-800 text-white border border-gray-700 rounded p-2 mt-1', 'placeholder': 'Ej. Abastecer tienda desde el taller'}),
+        }
+        labels = {
+            'ubicacion': 'Ubicación de Origen (De dónde sale)',
+            'ubicacion_destino': 'Ubicación de Destino (A dónde entra)',
+        }

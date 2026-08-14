@@ -1,6 +1,7 @@
 from django.db import models
 from catalogo.models import Producto
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 class Ubicacion(models.Model):
     TIPO_CHOICES = (
@@ -29,16 +30,22 @@ class Stock(models.Model):
 
 class Movimiento(models.Model): 
     TIPO_CHOICES = (
-        ('ENTRADA', 'Entrada (Compra / Devolución)'),
-        ('SALIDA', 'Salida (Venta / Merma / Traslado)'),
+        ('ENTRADA', 'Entrada'),
+        ('SALIDA', 'Salida'),
+        ('TRASLADO', 'Traslado Interno'),
     )
     
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
-    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.PROTECT)
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    cantidad = models.PositiveIntegerField()
-    motivo = models.CharField(max_length=200) 
+    cantidad = models.IntegerField()
+
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.PROTECT, related_name='movimientos_origen', verbose_name="Origen / Destino Único")
+    ubicacion_destino = models.ForeignKey(Ubicacion, on_delete=models.PROTECT, null=True, blank=True, related_name='movimientos_destino')
+
     fecha = models.DateTimeField(auto_now_add=True)
+    motivo = models.CharField(max_length=200)
+
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.tipo} | {self.producto.nombre} ({self.cantidad} und) | {self.motivo}"

@@ -3,8 +3,12 @@ from catalogo.models import Producto
 from inventario.models import Stock
 from ventas.models import Venta
 from django.db.models import Sum
-from .forms import IngresoMercaderiaForm
+from .forms import IngresoMercaderiaForm, TrasladoForm
+from django.contrib import messages
+from .models import Movimiento
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def dashboard_view(request):
     # 1. Contar cuántos productos distintos existen
     total_productos = Producto.objects.count()
@@ -26,6 +30,7 @@ def dashboard_view(request):
     return render(request, 'dashboard.html', context)
 
 # --- NUEVA VISTA PARA EL FORMULARIO DE INGRESO ---
+@login_required
 def ingreso_mercaderia_view(request):
     if request.method == 'POST':
         form = IngresoMercaderiaForm(request.POST)
@@ -38,3 +43,33 @@ def ingreso_mercaderia_view(request):
         form = IngresoMercaderiaForm()
     
     return render(request, 'ingreso_mercaderia.html', {'form': form})
+
+@login_required
+def historial_movimientos_view(request):
+    # Traemos todo el historial, del más nuevo al más viejo
+    movimientos = Movimiento.objects.all().order_by('-fecha')
+    return render(request, 'historial.html', {'movimientos': movimientos})
+
+@login_required
+def realizar_movimiento_view(request):
+    if request.method == 'POST':
+        form = TrasladoForm(request.POST)
+        if form.is_valid():
+            try:
+                movimiento = form.save(commit=False)
+                movimiento.tipo = 'TRASLADO' # Forzamos que sea traslado
+                
+                # Registramos qué usuario está haciendo la operación
+                if request.user.is_authenticated:
+                    movimiento.usuario = request.user
+                    
+                movimiento.save()
+                return redirect('historial') # Lo enviamos a ver el kardex si tuvo éxito
+                
+            except Exception as e:
+                # Si falla (ej. por falta de stock), sale alerta roja
+                messages.error(request, str(e))
+    else:
+        form = TrasladoForm()
+    
+    return render(request, 'movimientos.html', {'form': form})

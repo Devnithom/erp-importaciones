@@ -19,12 +19,13 @@
             <div class="text-white font-bold text-2xl tracking-widest">
                 SISTEMA IMPORTACIONES <span class="text-gray-500 text-sm tracking-normal ml-2">ERP</span>
             </div>
-            <div class="space-x-4 text-sm text-gray-300">
+           <div class="space-x-4 text-sm text-gray-300">
                 <a href="/" class="hover:text-white transition">Dashboard</a>
                 <a href="/catalogo/" class="hover:text-white transition">Inventario</a>
                 <a href="/ingreso/" class="hover:text-white transition">Ingresos</a>
                 <a href="/venta/" class="hover:text-white transition">Ventas</a>
-                <a href="/admin" class="hover:text-red-500 transition">Admin Panel</a>
+                <a href="/movimientos/" class="hover:text-yellow-400 transition font-bold">Movimientos</a>
+                <a href="/admin" class="hover:text-red-500 transition ml-4">Admin Panel</a>
             </div>
         </div>
     </nav>
@@ -35,6 +36,14 @@
         <!-- Aquí se inyectarán el dashboard y las demás pantallas automáticamente -->
         {% endblock %}
     </main>
+
+    <!-- BOTÓN CERRAR SESIÓN -->
+                <form action="{% url 'logout' %}" method="post" class="inline ml-4">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-500 hover:text-red-400 font-bold uppercase text-xs tracking-wider transition">
+                        Cerrar Sesión
+                    </button>
+                </form>
 
 </body>
 </html>

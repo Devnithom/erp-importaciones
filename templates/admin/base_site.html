@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin | Sistema Importaciones{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">SISTEMA IMPORTACIONES (Back-Office)</a>
+</h1>
+{% endblock %}
+
+{% block userlinks %}
+    <!-- Nuestro botón personalizado para escapar del admin -->
+    <a href="/" style="background: #2563eb; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; text-decoration: none; margin-right: 15px; border: 1px solid #1d4ed8;">
+        ⬅ Volver al Dashboard Visual
+    </a>
+    
+    <!-- Mantiene los enlaces originales de Django (Cambiar contraseña, Cerrar sesión) -->
+    {{ block.super }}
+{% endblock %}

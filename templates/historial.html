@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-3xl font-bold border-l-4 border-yellow-500 pl-3">Kardex / Historial de Movimientos</h1>
+    <!-- Botón para ir a hacer un movimiento -->
+    <a href="/movimientos/" class="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition">
+        + Nuevo Traslado
+    </a>
+</div>
+
+<div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow-lg">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-black border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wider">
+                <th class="p-4">Fecha y Hora</th>
+                <th class="p-4">Usuario</th>
+                <th class="p-4">Tipo</th>
+                <th class="p-4">Producto</th>
+                <th class="p-4">Cant.</th>
+                <th class="p-4">Ruta (Origen ➔ Destino)</th>
+                <th class="p-4">Motivo / Detalle</th>
+            </tr>
+        </thead>
+        <tbody class="text-sm">
+            {% for mov in movimientos %}
+            <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+                <td class="p-4 text-gray-400">{{ mov.fecha|date:"d/m/Y H:i" }}</td>
+                
+                <!-- NUEVO: Muestra el usuario o dice Sistema -->
+                <td class="p-4 text-blue-400 font-bold">{{ mov.usuario.username|default:"Sistema" }}</td>
+                
+                <td class="p-4">
+                    {% if mov.tipo == 'ENTRADA' %}
+                        <span class="bg-green-900 text-green-400 py-1 px-2 rounded font-bold text-xs">ENTRADA</span>
+                    {% elif mov.tipo == 'SALIDA' %}
+                        <span class="bg-red-900 text-red-400 py-1 px-2 rounded font-bold text-xs">SALIDA</span>
+                    {% else %}
+                        <span class="bg-yellow-900 text-yellow-400 py-1 px-2 rounded font-bold text-xs">TRASLADO</span>
+                    {% endif %}
+                </td>
+                
+                <td class="p-4 text-white font-bold">{{ mov.producto.nombre }} <br><span class="text-xs text-gray-500">{{ mov.producto.sku }}</span></td>
+                
+                <td class="p-4 font-bold 
+                    {% if mov.tipo == 'ENTRADA' %}text-green-400
+                    {% elif mov.tipo == 'SALIDA' %}text-red-400
+                    {% else %}text-yellow-400{% endif %}">
+                    {{ mov.cantidad }}
+                </td>
+                
+                <td class="p-4 text-gray-300">
+                    {% if mov.tipo == 'ENTRADA' %}
+                        <span class="text-green-500">📥 A:</span> {{ mov.ubicacion.nombre }}
+                    {% elif mov.tipo == 'SALIDA' %}
+                        <span class="text-red-500">📤 De:</span> {{ mov.ubicacion.nombre }}
+                    {% else %}
+                        <span class="text-yellow-500">🔄 De:</span> {{ mov.ubicacion.nombre }} <br>
+                        <span class="text-green-500">➔ A:</span> {{ mov.ubicacion_destino.nombre }}
+                    {% endif %}
+                </td>
+                
+                <td class="p-4 text-gray-400 italic">{{ mov.motivo }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="p-8 text-center text-gray-500">No hay movimientos registrados en el sistema.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

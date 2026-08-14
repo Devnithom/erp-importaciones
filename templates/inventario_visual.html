@@ -7,6 +7,27 @@
             + Nuevo Producto
         </button>
     </div>
+
+    <!-- NUEVO: Barra de Búsqueda -->
+    <div class="mb-8 bg-gray-900 border border-gray-800 p-4 rounded-lg flex flex-col md:flex-row gap-4 justify-between items-center">
+        <form method="GET" action="{% url 'inventario_visual' %}" class="w-full flex gap-2">
+            <input 
+                type="text" 
+                name="q" 
+                value="{{ query }}"
+                placeholder="Buscar por nombre, SKU o categoría (ej. Casaca, Polera)..." 
+                class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-blue-500 transition"
+            >
+            <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded hover:bg-blue-500 transition">
+                Buscar
+            </button>
+            {% if query %}
+                <a href="{% url 'inventario_visual' %}" class="bg-gray-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-600 transition flex items-center">
+                    Limpiar
+                </a>
+            {% endif %}
+        </form>
+    </div>
     
     <!-- Grilla de Tarjetas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

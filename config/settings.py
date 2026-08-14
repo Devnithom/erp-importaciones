@@ -139,3 +139,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# --- CONFIGURACIÓN DE LOGIN ---
+LOGIN_URL = 'login'          # Si alguien sin permiso intenta entrar, envíalo aquí
+LOGIN_REDIRECT_URL = '/'     # Cuando alguien inicie sesión con éxito, envíalo al Dashboard
