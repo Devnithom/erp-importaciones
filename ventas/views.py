@@ -35,4 +35,4 @@ def nueva_venta_view(request):
     else:
         form = NuevaVentaForm()
         
-    return render(request, 'nueva_venta.html', {'form': form})
+    return redirect('dashboard')  

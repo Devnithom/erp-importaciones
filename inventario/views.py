@@ -7,6 +7,9 @@ from .forms import IngresoMercaderiaForm, TrasladoForm
 from django.contrib import messages
 from .models import Movimiento
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+import openpyxl
+from openpyxl.styles import Font, Alignment
 
 @login_required
 def dashboard_view(request):
@@ -73,3 +76,61 @@ def realizar_movimiento_view(request):
         form = TrasladoForm()
     
     return render(request, 'movimientos.html', {'form': form})
+
+@login_required
+def exportar_kardex_excel(request):
+    # 1. Crear el libro de Excel y seleccionar la hoja activa
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Kardex de Movimientos"
+
+    # 2. Definir los encabezados de las columnas
+    headers = ['ID', 'Fecha', 'Usuario', 'Tipo', 'SKU Producto', 'Nombre Producto', 'Cantidad', 'Ubicación / Ruta', 'Motivo']
+    ws.append(headers)
+
+    # Dar formato de negrita y centrado a la primera fila (Encabezados)
+    for col in range(1, len(headers) + 1):
+        cell = ws.cell(row=1, column=col)
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal='center')
+
+    # 3. Traer los datos de la base de datos
+    movimientos = Movimiento.objects.all().order_by('-fecha')
+
+    # 4. Llenar el Excel fila por fila
+    for mov in movimientos:
+        # Darle formato a la fecha para Excel
+        fecha_str = mov.fecha.strftime("%d/%m/%Y %H:%M")
+        usuario_str = mov.usuario.username if mov.usuario else "Sistema"
+        
+        # Lógica para mostrar la ruta origen/destino según el tipo
+        if mov.tipo == 'ENTRADA':
+            ruta = f"A: {mov.ubicacion.nombre}"
+        elif mov.tipo == 'SALIDA':
+            ruta = f"De: {mov.ubicacion.nombre}"
+        else:
+            ruta = f"De: {mov.ubicacion.nombre} -> A: {mov.ubicacion_destino.nombre if mov.ubicacion_destino else 'N/A'}"
+
+        ws.append([
+            mov.id,
+            fecha_str,
+            usuario_str,
+            mov.tipo,
+            mov.producto.sku,
+            mov.producto.nombre,
+            mov.cantidad,
+            ruta,
+            mov.motivo
+        ])
+
+    # 5. Ajustar el ancho de las columnas para que se vea bien (Opcional pero recomendado)
+    column_widths = [5, 20, 15, 12, 15, 30, 10, 35, 30]
+    for i, column_width in enumerate(column_widths, 1):
+        ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = column_width
+
+    # 6. Preparar la respuesta HTTP para que el navegador descargue el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="Kardex_Movimientos.xlsx"'
+    wb.save(response)
+
+    return response

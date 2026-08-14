@@ -3,10 +3,16 @@
 {% block content %}
 <div class="mb-6 flex justify-between items-center">
     <h1 class="text-3xl font-bold border-l-4 border-yellow-500 pl-3">Kardex / Historial de Movimientos</h1>
-    <!-- Botón para ir a hacer un movimiento -->
-    <a href="/movimientos/" class="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition">
-        + Nuevo Traslado
-    </a>
+    <div class="space-x-2">
+        <!-- BOTÓN NUEVO DE EXCEL -->
+        <a href="{% url 'exportar_kardex' %}" class="bg-green-700 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition inline-flex items-center gap-2">
+            📊 Exportar a Excel
+        </a>
+        
+        <a href="/movimientos/" class="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition">
+            + Nuevo Traslado
+        </a>
+    </div>
 </div>
 
 <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow-lg">
